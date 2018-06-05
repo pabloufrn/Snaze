@@ -18,7 +18,9 @@ struct Cell
 {
     Point parent;
     bool HasParent;
-    uint f, g, h;
+    uint f, g, h, i;
+    // i é valor de custo adicional para que essa não colida com a cauda 
+
     
     Cell() = default;
     Cell(Point p);

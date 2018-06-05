@@ -15,8 +15,8 @@ enum class Direction
 /// A 2d natural coordinate.
 struct Point
 {
-    uint x;
-    uint y;
+    int x;
+    int y;
     
     Point() = default;
     

@@ -18,7 +18,7 @@ AI::AI(Level& level): m_level(&level)
 
 bool AI::isValid(Point p)
 {
-    return (p.y < m_level_size.x) && (p.x < m_level_size.y);
+    return p.y < m_level_size.x and p.x < m_level_size.y;
 }
 bool AI::isUnBlocked(Point p)
 {
@@ -26,7 +26,6 @@ bool AI::isUnBlocked(Point p)
     return object != Level::WALL and object != Level::INV_WALL;
 
 }
-std::queue<Point> m_snake;
 
 uint AI::risk(Point p, Point parent)
 {
@@ -71,8 +70,6 @@ void AI::tracePath()
 // Run A* Search Algorithm
 bool AI::aStarSearch()
 {
-    m_collision = false;
-    m_attempts_left = UINT_MAX;
     
     Point src = head();
     // If the source is out of range
@@ -89,13 +86,13 @@ bool AI::aStarSearch()
     memset(closedList, false, sizeof (closedList));
     
     // Add snake coords to closed list 
-    std::queue<Point> snake_copy = m_snake;
-    while(!snake_copy.empty())
-    {
-        auto p = snake_copy.front();
-        closedList[p.x][p.y] = true;
-        snake_copy.pop();
-    }
+//     std::queue<Point> snake_copy = m_snake;
+//     while(!snake_copy.empty())
+//     {
+//         auto p = snake_copy.front();
+//         closedList[p.x][p.y] = true;
+//         snake_copy.pop();
+//     }
  
     m_cellDetails.resize(m_level_size.y);
  
@@ -138,36 +135,35 @@ bool AI::aStarSearch()
         uint gNew, hNew, fNew;
  
         
-        Point points[] = {Point(i-1, j), Point(i+1, j), Point(i, j-1), Point(i, j+1)};
+        Point points[4] = {Point(i, j+1), Point(i, j-1), Point(i+1, j), Point(i-1, j)};
         uint c;
-        for(c = 0; c < 4; ++c)
+        for(c = 0; c < 4; c++)
         {
             Point& current_point = points[c];
             
-            if (isValid(current_point) == true)
+            if (isValid(current_point))
             {
-                uint vrisk = risk(current_point, Point(i, j));
-                if(vrisk > 0)
-                {
-                    
-                    m_cellDetails[current_point.x][current_point.y].f += 2;
-                    continue;
-                }
-                else if (isDestination(current_point) == true)
+//                 uint vrisk = risk(current_point, Point(i, j));
+//                 if(vrisk > 0)
+//                 {
+//                     
+//                     continue;
+//                 }
+                if (isDestination(current_point))
                 {
                     m_cellDetails[current_point.x][current_point.y].parent = Point(i, j);
                     m_cellDetails[current_point.x][current_point.y].HasParent = true;
                     tracePath();
                     return true;
                 }
-                else if (closedList[current_point.x][current_point.y] == false &&
+                else if (closedList[current_point.x][current_point.y] == false and
                         isUnBlocked(current_point) == true)
                 {
                     gNew = m_cellDetails[i][j].g + 1;
                     hNew = calculateHValue(current_point);
                     fNew = gNew + hNew;
     
-                    if (m_cellDetails[current_point.x][current_point.y].f == UINT_MAX ||
+                    if (m_cellDetails[current_point.x][current_point.y].f == UINT_MAX or
                         m_cellDetails[current_point.x][current_point.y].f > fNew)
                     {
                         openList.insert( std::make_pair(fNew,
@@ -247,5 +243,7 @@ Direction AI::next_move()
     }
     auto dir = goto_free_way();
     std::cout << "indo para caminho livre, direção: "  << dir << "\n";
+    std::cout << "player em: ("  << src.x << ", " << src.y << ")\n";
+    std::cout << "maca em: ("  << m_goal.x << ", " << m_goal.y << ")\n";
     return dir;
 }

@@ -220,8 +220,13 @@ void MainGameState::update()
     }
     else if(state == ATE_APPLE)
     {
-        m_player->eat(new_head);
+//         m_player->eat(new_head);
         // place new apple
+        
+        m_player->crawl(new_head);
+        // remove the tail
+        m_current_level.set_object(tail, Level::GROUND);
+        m_quadboard->set_quad_texture(tail.x, tail.y, MAP_GROUND);
         auto apple_pos = m_current_level.place_random_apple();
         m_quadboard->set_quad_texture(apple_pos.x, apple_pos.y, MAP_APPLE);
     }

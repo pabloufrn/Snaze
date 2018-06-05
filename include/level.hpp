@@ -76,6 +76,7 @@ inline void Level::load_map(std::string filename)
             throw std::runtime_error("[ERROR](" + filename + "): " + "Error loading the map.");
         switch(ch)
         {
+            case '\n':
             case ' ':
                 m_map.push_back(GROUND);
                 break;
