@@ -15,7 +15,7 @@ class StateMachine
         StateMachine();
         ~StateMachine();
         
-        void add_state(StateRef state);
+        void add_state(StateRef state, bool replace = true);
         void remove_state();
         
         bool empty();

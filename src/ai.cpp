@@ -6,56 +6,42 @@ using pPair = std::pair<uint, std::pair<uint, uint>>;
 
 /// == STRUCTURES ==
 
-/// A Cell with 'f', 'g', 'h' values.
-Cell::Cell(Point p): parent(p), HasParent(true), f(0u), g(0u), h(0u) 
+/// A Cell with 'f', 'g', 'h' and 'i' values.
+Cell::Cell(Point p): parent(p), f(0u), g(0u), h(0u) , i(0u)
 {   }
 
 /// Methods
 
+/// Constructor
 AI::AI(Level& level): m_level(&level)
 {
 }
-
+/// Check bounds
 bool AI::isValid(Point p)
 {
     return p.y < m_level_size.x and p.x < m_level_size.y;
 }
+/// Check if point is not blocked
 bool AI::isUnBlocked(Point p)
 {
     auto object = m_level->get_object(p);
     return object != Level::WALL and object != Level::INV_WALL;
 
 }
-
-uint AI::risk(Point p, Point parent)
-{
-    uint remaining_checks = m_snake.size() - 1;
-    
-    auto current_cell = Cell(parent);
-    
-    // tenho que verificar se a ultima coordenada bate com as 'size' ultimas coordenadas
-    while(remaining_checks != 0)
-    {
-        if(p == current_cell.parent)
-            return remaining_checks;
-        current_cell = m_cellDetails[current_cell.parent.x][current_cell.parent.y];
-        --remaining_checks;
-    }
-    return 0;
-}
-
+/// check if snake (in simulations) get into food
 bool AI::isDestination(Point p)
 {
     return p == m_goal;
 }
+/// Heuristic value based on Manhattan distance
 double AI::calculateHValue(Point p)
 {
      return abs(int(p.x - m_goal.x)) +
             abs(int(p.y - m_goal.y)); 
 }
+/// Store final path in m_path
 void AI::tracePath()
 {
-    
     Cell current_cell = Cell(m_goal);
     Cell current_parent = m_cellDetails[m_goal.x][m_goal.y];
 
@@ -82,18 +68,12 @@ bool AI::aStarSearch()
     if (!isUnBlocked(src) or !isUnBlocked(m_goal))
         throw std::runtime_error("Source or the destination is blocked\n");
     
-    bool closedList[m_level_size.x][m_level_size.y];
+    bool closedList[m_level_size.y][m_level_size.x];
     memset(closedList, false, sizeof (closedList));
     
     // Add snake coords to closed list 
-//     std::queue<Point> snake_copy = m_snake;
-//     while(!snake_copy.empty())
-//     {
-//         auto p = snake_copy.front();
-//         closedList[p.x][p.y] = true;
-//         snake_copy.pop();
-//     }
- 
+    std::queue<Point> snake_copy = m_snake;
+    
     m_cellDetails.resize(m_level_size.y);
  
     uint i, j;
@@ -106,16 +86,46 @@ bool AI::aStarSearch()
             m_cellDetails[i][j].f = UINT_MAX;
             m_cellDetails[i][j].g = UINT_MAX;
             m_cellDetails[i][j].h = UINT_MAX;
-            m_cellDetails[i][j].HasParent = false;
+            m_cellDetails[i][j].i = 0;
 
         }
     }
- 
+    snake_copy = m_snake;
+    auto snake_size = m_snake.size();
+    if(snake_size > 1)
+    {
+        if(snake_size < 4)
+        {
+            if(snake_size == 3)
+                snake_copy.pop();
+            auto p = snake_copy.front();
+            m_cellDetails[p.x][p.y].i = 1 + 100;
+            m_cellDetails[p.x][p.y].f = calculateHValue(p) + m_cellDetails[p.x][p.y].i;
+        }
+        else
+        {
+            auto limit = snake_size - 1;
+            uint iNew;
+            for(uint c = 1; c < limit; c++)
+            {
+                auto p = snake_copy.front();
+                iNew = c;
+                m_cellDetails[p.x][p.y].i = iNew - 1;
+                m_cellDetails[p.x][p.y].f = calculateHValue(p);
+                snake_copy.pop();
+            }
+            auto p = snake_copy.front();
+            m_cellDetails[p.x][p.y].i = 1;
+            m_cellDetails[p.x][p.y].f = calculateHValue(p);
+            snake_copy.pop();
+        }
+    }
+    
+    
     i = src.x, j = src.y;
     m_cellDetails[i][j].f = 0;
     m_cellDetails[i][j].g = 0;
     m_cellDetails[i][j].h = 0;
-    m_cellDetails[i][j].HasParent = true;
     m_cellDetails[i][j].parent = src;
 
     std::set<pPair> openList;
@@ -131,8 +141,9 @@ bool AI::aStarSearch()
         i = p.second.first;
         j = p.second.second;
         closedList[i][j] = true;
+        
       
-        uint gNew, hNew, fNew;
+        uint gNew, hNew, fNew, iNew;
  
         
         Point points[4] = {Point(i, j+1), Point(i, j-1), Point(i+1, j), Point(i-1, j)};
@@ -141,31 +152,27 @@ bool AI::aStarSearch()
         {
             Point& current_point = points[c];
             
-            if (isValid(current_point))
+            if (    isValid(current_point)  )    
             {
-//                 uint vrisk = risk(current_point, Point(i, j));
-//                 if(vrisk > 0)
-//                 {
-//                     
-//                     continue;
-//                 }
                 if (isDestination(current_point))
                 {
                     m_cellDetails[current_point.x][current_point.y].parent = Point(i, j);
-                    m_cellDetails[current_point.x][current_point.y].HasParent = true;
                     tracePath();
                     return true;
                 }
-                else if (closedList[current_point.x][current_point.y] == false and
-                        isUnBlocked(current_point) == true)
+                else if (   !closedList[current_point.x][current_point.y] and   \
+                            isUnBlocked(current_point)                          )
                 {
+                    
                     gNew = m_cellDetails[i][j].g + 1;
                     hNew = calculateHValue(current_point);
+                    iNew = m_cellDetails[current_point.x][current_point.y].i;
                     fNew = gNew + hNew;
-    
-                    if (m_cellDetails[current_point.x][current_point.y].f == UINT_MAX or
-                        m_cellDetails[current_point.x][current_point.y].f > fNew)
+
+                    if  (   m_cellDetails[current_point.x][current_point.y].f == UINT_MAX or    \
+                        (   m_cellDetails[current_point.x][current_point.y].f > fNew + iNew))
                     {
+                        
                         openList.insert( std::make_pair(fNew,
                                                 std::make_pair(current_point.x, current_point.y)));
     
@@ -174,20 +181,21 @@ bool AI::aStarSearch()
                         m_cellDetails[current_point.x][current_point.y].g = gNew;
                         m_cellDetails[current_point.x][current_point.y].h = hNew;
                         m_cellDetails[current_point.x][current_point.y].parent = Point(i, j);
-                        m_cellDetails[current_point.x][current_point.y].HasParent = true;
                     }
                 }
             }
         }
+        
     }
   
     return false;
 }
-
+/// The IA does not receive user input events
 void AI::update(sf::Event&)
 {
     return;
 }
+/// Go to the next free direction
 Direction AI::goto_free_way()
 {
     Point src = head();
@@ -214,21 +222,19 @@ Direction AI::goto_free_way()
     m_last_move = min_h_dir;
     return m_last_move;
 }
-
+/// Compute next direction of the Player (IA)
 Direction AI::next_move()
 {
     m_goal = m_level->get_apple_location();
     Point src = head(); 
     if(isDestination(src))
     {
-        std::cout << "Está no destino, indo para caminho livre.\n";
         return goto_free_way();
     }
     
     if(!m_path.empty())
     {
         auto dir = m_path.top();
-        std::cout << "Seguindo camnhinho traçado, direção: "  << dir << "\n";
         m_path.pop();
         return dir;
     }
@@ -238,12 +244,8 @@ Direction AI::next_move()
     {
         auto dir = m_path.top();
         m_path.pop();
-        std::cout << "Seguindo camnhinho traçado, direção: "  << dir << "\n";
         return dir;
     }
     auto dir = goto_free_way();
-    std::cout << "indo para caminho livre, direção: "  << dir << "\n";
-    std::cout << "player em: ("  << src.x << ", " << src.y << ")\n";
-    std::cout << "maca em: ("  << m_goal.x << ", " << m_goal.y << ")\n";
     return dir;
 }

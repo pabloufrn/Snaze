@@ -20,13 +20,9 @@
 #include "human.hpp"
 #include "ai.hpp"
 
-
+#include "pause_game_state.hpp"
 #include "game_over_state.hpp"
 
-/*
- * TODO: criar view
- * - colocar dentro da classe
- */
 enum InternalState
 {
     CRAWLED,
@@ -38,7 +34,7 @@ class MainGameState : public State
 {
     public:
         
-        MainGameState(sf::RenderTarget& target, StateMachine* state_machine);
+        MainGameState(sf::RenderTarget& target, StateMachine* state_machine, bool ai = false);
         
         void init();
         void process_events(sf::Event&);

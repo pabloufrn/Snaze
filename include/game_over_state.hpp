@@ -27,6 +27,7 @@ class GameOverState : public State
         void main_menu();
         
     private:
+
         sui::Screen m_screen;
         StateMachine* m_machine;
         sf::RenderTarget* m_window;

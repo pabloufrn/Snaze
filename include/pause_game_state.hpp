@@ -3,18 +3,20 @@
 
 #include <iostream>
 #include <SFML/Graphics.hpp>
-
-#include "state.hpp"
-
-#include "screen.hpp"
+#include <memory>
 
 #include "main_game_state.hpp"
+#include "state_machine.hpp"
+#include "state.hpp"
+#include "text.hpp"
+#include "button.hpp"
+#include "screen.hpp"
 
-class MainMenuState : public State
+class PauseGameState : public State
 {
     public:
         
-        MainMenuState(sf::RenderTarget& target, StateMachine* state_machine);
+        PauseGameState(sf::RenderTarget& target, StateMachine* state_machine, State& game_state);
         
         void init();
         void process_events(sf::Event&);
@@ -22,18 +24,15 @@ class MainMenuState : public State
         void render();
         
         // --- Callbacks ---
-        void start_game();
-        void start_game_ai();
-        void exit_game();
-//         void about_game();
-//         void help_game();
+        void resume_game();
         
     private:
-        sui::Screen m_menu_screen;
-        StateMachine* m_machine;
+
         sf::RenderTarget* m_window;
+        StateMachine* m_machine;
+        sui::Screen m_screen;
+        State* m_game_state;
+
 };
-
-
 
 #endif

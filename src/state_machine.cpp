@@ -8,9 +8,9 @@ StateMachine::StateMachine()
 StateMachine::~StateMachine()
 {   
 }
-void StateMachine::add_state(StateRef state)
+void StateMachine::add_state(StateRef state, bool replace)
 {   
-    if(!m_states.empty())
+    if(replace and !m_states.empty())
         m_states.pop();
     m_states.push(std::move(state));
 }

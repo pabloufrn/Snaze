@@ -24,6 +24,7 @@ class MainMenuState : public State
         
         // --- Callbacks ---
         void start_game();
+        void start_game_ai();
         void exit_game();
 //         void about_game();
 //         void help_game();

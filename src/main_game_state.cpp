@@ -1,11 +1,15 @@
 #include "main_game_state.hpp"
 
-MainGameState::MainGameState(sf::RenderTarget& target, StateMachine* state_machine) : 
-m_game_screen(""), m_status_screen(""), m_machine(state_machine),  m_window(&target), m_player(new AI(m_current_level))
+MainGameState::MainGameState(sf::RenderTarget& target, StateMachine* state_machine, bool ai) : 
+m_game_screen(""), m_status_screen(""), m_machine(state_machine),  m_window(&target)
 {
     sf::Vector2u window_size = m_window->getSize();
     m_view.setSize(sf::Vector2f {(float) window_size.x, (float) window_size.y});
     m_window->setView(m_view);
+    if(ai)
+        m_player = new AI(m_current_level);
+    else
+        m_player = new Human();
 }
 
 void MainGameState::init()
@@ -61,7 +65,6 @@ void MainGameState::init()
             }
         }
     }
-    
     // - place snake
     auto spawn_pos(m_current_level.get_spawn());
     m_view.setCenter(QUAD_SIZE * spawn_pos.y, QUAD_SIZE * (spawn_pos.x + 1));
@@ -77,7 +80,8 @@ void MainGameState::init()
     m_window->setView(m_view);
     m_game_screen.add_widget(m_quadboard);
     
-    
+    m_machine->add_state(StateRef(new PauseGameState(*m_window, m_machine, *this)), false);
+    m_machine->get_active_state()->init();
 }
 void MainGameState::process_events(sf::Event& e)
 {
@@ -220,15 +224,11 @@ void MainGameState::update()
     }
     else if(state == ATE_APPLE)
     {
-//         m_player->eat(new_head);
+        // eat apple
+        m_player->eat(new_head);
         // place new apple
-        
-        m_player->crawl(new_head);
-        // remove the tail
-        m_current_level.set_object(tail, Level::GROUND);
-        m_quadboard->set_quad_texture(tail.x, tail.y, MAP_GROUND);
-        auto apple_pos = m_current_level.place_random_apple();
-        m_quadboard->set_quad_texture(apple_pos.x, apple_pos.y, MAP_APPLE);
+         auto apple_pos = m_current_level.place_random_apple();
+         m_quadboard->set_quad_texture(apple_pos.x, apple_pos.y, MAP_APPLE);
     }
     else
     {
@@ -251,6 +251,7 @@ void MainGameState::update()
 void MainGameState::render()
 {
     // draw map view
+    m_window->setView(m_view);
     m_window->draw(m_game_screen);
     // draw status bar
 //     m_window->draw(m_game_screen);
