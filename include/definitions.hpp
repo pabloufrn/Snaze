@@ -8,6 +8,7 @@
 
 // Image Pathes
 #define TILESET_FILE "img/tileset.png"
+#define FAVICON_FILE "img/favicon.png"
 
 // Files Prefix and sufix
 #define DATA_FILE_PATH "data/"
@@ -20,4 +21,7 @@
 #define MAP_WALL 4
 #define MAP_APPLE 5
 
+// Game config
+#define GAME_LIFES 3
+#define GAME_APPLES 10
 #endif

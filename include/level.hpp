@@ -4,6 +4,7 @@
 #include <fstream>
 #include <string>
 #include <random>
+#include <vector>
 
 #include "definitions.hpp"
 #include "game_classes.hpp"
@@ -56,12 +57,14 @@ inline void Level::load_map(std::string filename)
     // --- Populate array
     
     // -- Load Config
-    
+    m_map_size = Size(0, 0);
+
     file >> m_map_size.x >> m_map_size.y;
     
-    if(file.fail())
+    if(file.fail() or m_map_size.x == 0 or m_map_size.y == 0)
         throw std::runtime_error("[ERROR]: Invalid map file.");
-    
+    m_map.clear();
+    std::vector<MapObject>().swap(m_map);
     m_map.reserve(m_map_size.x * m_map_size.y);
     auto capacity = m_map.capacity();
 
@@ -95,6 +98,7 @@ inline void Level::load_map(std::string filename)
         }
         ++c;
     }
+
 }
 inline const Level::MapObject& Level::get_object(Point p) const
 {

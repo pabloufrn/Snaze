@@ -10,8 +10,7 @@ class Human : public Player
        Direction next_move();
        void update(sf::Event& e);
     private:
-        Direction m_next_direction = Direction::S;
-        Direction m_last_direction = Direction::N;
+        Direction m_next_move = Direction::S;
 };
 
 #endif

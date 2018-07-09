@@ -17,7 +17,7 @@ class GameOverState : public State
 {
     public:
         
-       GameOverState(sf::RenderTarget& target, StateMachine* state_machine);
+       GameOverState(sf::RenderTarget& target, StateMachine* state_machine, uint& score);
         
         void init();
         void process_events(sf::Event& e);
@@ -31,6 +31,7 @@ class GameOverState : public State
         sui::Screen m_screen;
         StateMachine* m_machine;
         sf::RenderTarget* m_window;
+        uint m_score;
         
 };
 

@@ -9,7 +9,7 @@ class QuadBoard : public sui::Widget
 public:
     
     QuadBoard(sf::Vector2f position, uint quad_size, sf::Vector2u dimensions, uint margin, const std::string & tileset_file, sf::Vector2u tileset_dimesions, uint default_texture);
-    
+    ~QuadBoard();
 
     void set_quad_texture(uint x, uint y, uint tileNumber);
     void rotate_quad_texture(uint x, uint y, uint rotation);

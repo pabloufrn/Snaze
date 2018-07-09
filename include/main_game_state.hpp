@@ -19,6 +19,7 @@
 #include "player.hpp"
 #include "human.hpp"
 #include "ai.hpp"
+#include "background_widget.hpp"
 
 #include "pause_game_state.hpp"
 #include "game_over_state.hpp"
@@ -27,7 +28,8 @@ enum InternalState
 {
     CRAWLED,
     ATE_APPLE,
-    DIED
+    DIED,
+    PAUSED
 };
 
 class MainGameState : public State
@@ -42,9 +44,13 @@ class MainGameState : public State
         void render();
         
         void game_over();
-        
+        void next_level();
+        void respawn();
+
     private:
         uint m_score;
+        uint m_lifes;
+        uint m_apples;
         
         sui::Screen m_game_screen;
         sui::Screen m_status_screen;
@@ -56,7 +62,12 @@ class MainGameState : public State
         Player* m_player;
         sf::View m_view;
         sf::Clock m_clock;
-        sf::Time m_update_period = sf::milliseconds(150);
+        sf::Time m_update_period = sf::milliseconds(170);
+        bool m_paused = true;
+
+        sui::Text* m_tscore;
+        sui::Text* m_tapples;
+        sui::Text* m_tlifes;
 };
 
 

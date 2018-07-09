@@ -15,6 +15,7 @@ namespace sui
             void set_position(const sf::Vector2f& position);
             const sf::Vector2f& get_size()  const;
             const sf::Vector2f& get_position() const;
+            void set_string(std::string str);
         private:
             virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
             
@@ -63,5 +64,8 @@ inline void sui::Text::draw(sf::RenderTarget& target, sf::RenderStates) const
 {
     target.draw(m_text);
 }
-
+inline void sui::Text::set_string(std::string str)
+{
+    m_text.setString(str);
+}
 #endif

@@ -128,6 +128,12 @@ bool QuadBoard::update_handler(sf::Event&)
     return false;
 }
 
+QuadBoard::~QuadBoard()
+{
+    m_vertices.clear();
+}
+
+
 
 
 

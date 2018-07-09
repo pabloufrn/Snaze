@@ -12,7 +12,7 @@ class Player
         
         void crawl(Point new_coord);
         void eat(Point new_coord);
-        
+        void reset();
         // Its just a normal copy. While the snake is moving the tail and the head are updated.
         Point tail() const;
         Point head() const;
@@ -22,6 +22,7 @@ class Player
         
     protected:
         std::queue<Point> m_snake;
+        Direction m_last_move = Direction::N;
 };
 
 

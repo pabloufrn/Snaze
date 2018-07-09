@@ -22,3 +22,10 @@ void Player::eat(Point new_coord)
 {
     m_snake.push(new_coord);
 }
+
+void Player::reset()
+{
+    while(!m_snake.empty())
+        m_snake.pop();
+    m_last_move = Direction::N;
+}

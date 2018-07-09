@@ -30,6 +30,9 @@ Game::Game(sf::Vector2u window_size, std::string title)
 void Game::run()
 {
     // inicia no menu
+    sf::Image icon;
+    icon.loadFromFile(FAVICON_FILE);
+    m_data->window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
     m_data->sm.add_state(StateRef(new MainMenuState(m_data->window, &m_data->sm)));
     m_data->sm.get_active_state()->init();
     // game loop
@@ -44,10 +47,10 @@ void Game::run()
 				break;
 
 			}
-            m_data->sm.get_active_state()->process_events(e);
-            if(m_data->sm.empty())
-                return;
         }
+        m_data->sm.get_active_state()->process_events(e);
+        if(m_data->sm.empty())
+            return;
         m_data->sm.get_active_state()->update();
         m_data->window.clear();
         m_data->sm.get_active_state()->render();

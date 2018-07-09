@@ -21,6 +21,7 @@ namespace sui {
             void set_enable(bool enable);
             bool get_enable() const;
             void add_widget(Widget*);
+            void pop_widget();
             std::string get_name() const;
         protected:
             
@@ -43,7 +44,7 @@ inline sui::Screen::~Screen()
         delete w;
     }
     m_widgets.clear();
-    std::vector<Widget*>().swap(m_widgets);
+//    std::vector<Widget*>().swap(m_widgets);
 }
 inline void sui::Screen::update(sf::Event& e)
 {
@@ -81,5 +82,11 @@ inline std::string sui::Screen::get_name() const
 inline void sui::Screen::add_widget(Widget* widget)
 {
     m_widgets.push_back(widget);
+}
+inline void sui::Screen::pop_widget()
+{
+    if(m_widgets.empty())
+        return;
+    m_widgets.pop_back();
 }
 #endif
