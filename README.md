@@ -1,5 +1,5 @@
 # Snaze
-
+![](https://raw.githubusercontent.com/pabloufrn/Snaze/master/extra/preview.png)
 ### Sobre o projeto
 Esse programa foi desenvolvido baseado em um trabalho de Linguagem de programação do Instituto Metrópole Digital, o algoritmo original
 pode ser encontrado em https://github.com/henriquedavidufrn/snaze.
