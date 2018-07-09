@@ -1,55 +1,24 @@
-# Screen Manager
+# Snaze
 
-Workflow
-
--- criar action para widget
-
-
---- criar propriedades para widget
--- focavel
--- clicavel
-
-// nem todos tem essas propriedade, mas a screen tem responsabilidade de lidar com elas
-
---- atualizar membros de state
--- Todo state tem acesso a janela
--- Todo state tem acesso ao gerenciador de estados 
-
---- remover o render
--- passar a janela no init (se exepcionalmente o state precisar guardar a janela será um caso especial)
--- colocar drawable
-
---- criar estado close
--- sem acesso window.close ele apenas reseta os estados
-
---- guardar o score e as vidas
--- e ativar isso nos gatilhos do main game state
-
---- gatilho do level up
--- bastante importante para deixar o jogo legal
-
---- criar a HUD
--- será uma passada desenhar a view da board
--- depois uma passada para desenhar a view da hud
-
---- Velocidade do jogo
--- o jogo vai ficando mais interessante
-
---- intelegencia artificial
--- hummm
-
---- Problemas previstos
--- A IA pode atrasar o tempo do jogo.
-. fazer com que a IA trabalhe em paralelo
--- A IA pode não ter se decidido no tempo correto
-. Criar decisão para evitar isso
-
---- player vs IA
--- programar recálculo do caminho na IA
--- A IA tem a vantagem
-
----- Final
---- colocar a cobra fora da board
--- o game vai ficar mais fluido
---- melhorar a bibioteca
--- a base já está crescendo bastante
+### Sobre o projeto
+Esse programa foi desenvolvido baseado em um trabalho de Linguagem de programação do Instituto Metrópole Digital, o algoritmo original
+pode ser encontrado em https://github.com/henriquedavidufrn/snaze.
+### Limitações
+- O projeto carrega um arquivo mapcycle.txt que contém os nomes dos mapas e carrega o arquivo de mapa ao iniciar o level. O problema disso
+é que esses arquivos são carregados todo vez que o jogador clicar no botão iniciar o jogo, uma correção disso será revisada em breve.
+- O projeto está incompleto e será refeito.
+### Melhorias planejadas
+- [ ] Melhorar carregamento do mapas.
+- [ ] Usar Hamiltonian path quando a IA detectar um destino "perigoso".
+- [ ] Melhorar manuteabilidade do código do código.
+- [ ] Criar um back-end totalmente indenpedente da interface de usuário. Assim o código poderia ser reutilizado até mesmo em outras
+plataformas.
+- [ ] Melhorar gráficos e colocar sons (inclusive o modo que o jogo se apresenta para o usuário).
+- [ ] Criar o modo player vs IA.
+- [ ] Criar servidor e cliente do jogo.
+### Como compilar
+Primeiramente você deve ter o GNU Compiler Collection (instale o pacote `build-essential`). Então execute o g++ com `sh compile_game.sh`,
+após isso é só executar com `./exec_game` ou dar dois cliques no executável.
+[b/]
+[b/]
+Ah, as cores da snake refereciam uma linguagem.
