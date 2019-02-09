@@ -17,12 +17,5 @@ plataformas.
 - [ ] Criar o modo player vs IA.
 - [ ] Criar servidor e cliente do jogo.
 ### Como compilar
-Primeiramente você deve ter o GNU Compiler Collection (instale o pacote `build-essential`). Então execute o g++ com `sh compile_game.sh`,
-após isso é só executar com `./exec_game` ou dar dois cliques no executável.  
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-Ah, as cores da snake refereciam uma linguagem.
+Para compilar, eu recomendo usar o `cmake`. use o comando 
+`cmake -G"Unix Makefiles" .`, depois use o comando `make`.
